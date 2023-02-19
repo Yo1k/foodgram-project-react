@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Exists, OuterRef
 from djoser.views import UserViewSet
 
-from .models import Subscription
+from ..models import Subscription
 
 User = get_user_model()
 

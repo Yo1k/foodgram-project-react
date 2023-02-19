@@ -4,7 +4,6 @@ from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-from users.views import CustomUserViewSet
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -17,29 +16,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(
-        'api/users/',
-        CustomUserViewSet.as_view({
-            'get': 'list',
-            'post': 'create',
-        })
-    ),
-    path(
-        'api/users/me/',
-        CustomUserViewSet.as_view({'get': 'me'})
-    ),
-    path(
-        'api/users/<int:id>/',
-        CustomUserViewSet.as_view({'get': 'retrieve'})
-    ),
-    path(
-        '/api/users/set_password/',
-        CustomUserViewSet.as_view({'get': 'set_password'})
-    ),
-    path(
-        'api/',
-        include('djoser.urls.authtoken')
-    ),
+    path('api/', include('users.urls', namespace='users')),
 ]
 
 urlpatterns += [
