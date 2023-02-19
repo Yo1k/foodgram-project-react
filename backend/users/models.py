@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import EmailValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -34,3 +33,31 @@ class User(AbstractUser):
             f'email={self.email}, '
             f'is_staff={self.is_staff}'
         )
+
+
+class Subscription(models.Model):
+    subscribing = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscribing'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscriber'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['subscribing', 'user'],
+                name='unique_subscribing_user'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('subscribing')),
+                name='disable_self_subscribe',
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f'({self.user}) is subscribing on ({self.subscribing})'
