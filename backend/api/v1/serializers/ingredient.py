@@ -1,17 +1,16 @@
-from recipes.models import Tag
+from recipes.models import Ingredient
 from rest_framework import serializers
 
 
-class TagSerializer(serializers.ModelSerializer):
+class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
             'id',
             'name',
-            'color',
-            'slug',
+            'measurement_unit',
         )
-        model = Tag
+        model = Ingredient
         read_only_fields = (
             'id',
         )

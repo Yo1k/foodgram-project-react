@@ -12,6 +12,11 @@ router.register(
     views.TagViewSet,
     basename='tags'
 )
+router.register(
+    'ingredients',
+    views.IngredientViewSet,
+    basename='ingredients'
+)
 
 urlpatterns = [
     path('', include(router.urls)),

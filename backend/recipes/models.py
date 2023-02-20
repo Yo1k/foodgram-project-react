@@ -15,7 +15,7 @@ User = get_user_model()
 class Ingredient(models.Model):
     measurement_unit = models.CharField(
         _('measurement unit'),
-        max_length=200
+        max_length=200,
     )
     name = models.CharField(
         _('name'),
