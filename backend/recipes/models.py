@@ -3,6 +3,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator
 
+from .validators import color_hex_validator
+
 # The length of text used in `__str__`
 LENGTH_STR = 15
 
@@ -90,12 +92,13 @@ class IngredientAmount(models.Model):
 
 
 class Tag(models.Model):
-    # SKTODO добавить валидатор на HEX
     color = models.CharField(
         _('HEX color'),
+        blank=True,
         max_length=7,
         null=True,
         unique=True,
+        validators=[color_hex_validator,]
     )
     name = models.CharField(
         _('name'),
@@ -104,6 +107,7 @@ class Tag(models.Model):
     )
     slug = models.SlugField(
         _('unique slug'),
+        blank=True,
         max_length=200,
         null=True,
         unique=True,
