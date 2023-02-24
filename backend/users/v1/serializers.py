@@ -6,7 +6,7 @@ User = get_user_model()
 
 
 class CustomUserSerializer(UserSerializer):
-    is_subscribed = serializers.BooleanField(read_only=True)
+    is_subscribed = serializers.SerializerMethodField()
 
     class Meta(UserCreateSerializer.Meta):
         fields = (
@@ -26,6 +26,18 @@ class CustomUserSerializer(UserSerializer):
                 'You can not subscribe to yourself'
             )
         return value
+
+    def get_is_subscribed(self, obj):
+        request = self.context['request']
+        if request.user:
+            # The condition in the `filter` covers both situations:
+            # when user is authorized and anonymous,
+            # in comparison with the condition `user=request.user`,
+            # that falls with the error in the case of an
+            # anonymous client.
+            return obj.subscribing.filter(user__id=request.user.id).exists()
+        else:
+            return False
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
