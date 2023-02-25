@@ -12,6 +12,24 @@ LENGTH_STR = 15
 User = get_user_model()
 
 
+class Favorite(models.Model):
+    recipe = models.ForeignKey(
+        'Recipe',
+        verbose_name=_('recipe'),
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User,
+        verbose_name=_('user'),
+        on_delete=models.CASCADE
+    )
+    def __str__(self):
+        return (
+            f'user={self.user}, '
+            f'favorite recipe={self.recipe}'
+        )
+
+
 class Ingredient(models.Model):
     measurement_unit = models.CharField(
         _('measurement unit'),
@@ -123,6 +141,3 @@ class Tag(models.Model):
 # class ShoppingCart(models.Model):
 #     pass
 
-
-# class Favorite(models.Model):
-#     pass

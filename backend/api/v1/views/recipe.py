@@ -2,7 +2,7 @@ from recipes.models import Recipe
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from ..serializers import RecipeCreateUpdate, RecipeListSerializer
+from ..serializers import RecipeCreateUpdateSerializer, RecipeListSerializer
 
 
 class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
@@ -18,7 +18,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return RecipeListSerializer
     
-        return RecipeCreateUpdate
+        return RecipeCreateUpdateSerializer
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

@@ -44,7 +44,7 @@ class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class RecipeCreateUpdate(serializers.ModelSerializer):
+class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     ingredients = IngredientInRecipeCreateSerializer(
         source='ingredientamount_set',
         many=True
@@ -185,5 +185,23 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'name',
             # 'image', SKTODO
             'text',
+            'cooking_time',
+        )
+
+
+class RecipeMinifiedSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        fields = (
+            'id',
+            'name',
+            # 'image', # SKTODO not impl'image'
+            'cooking_time',
+        )
+        model = Recipe
+        read_only_fields = (
+            'id',
+            'name',
+            # 'image', # SKTODO not impl
             'cooking_time',
         )

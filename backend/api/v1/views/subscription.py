@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from ..exceptions import SubscribeActionError
 from ..serializers import UserWithRecipes
 
-# Costants with errors messages:
+# Constants with errors messages:
 REPITE_SUBSCRIBE_MESSAGE = _(
     'You are trying repeatedly subscribe (unsubscribe)'
 )

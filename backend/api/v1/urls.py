@@ -14,6 +14,11 @@ router.register(
 )
 router.register(
     'recipes',
+    views.FavoriteRecipesViewSet,
+    basename='favorites'
+)
+router.register(
+    'recipes',
     views.RecipeViewSet,
     basename='recipes'
 )

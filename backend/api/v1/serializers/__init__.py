@@ -1,5 +1,4 @@
 from .ingredient import IngredientSerializer
-# SKTODO поправить имена: RecipeCreateUpdate
-from .recipe import RecipeCreateUpdate, RecipeListSerializer
+from .recipe import RecipeCreateUpdateSerializer, RecipeListSerializer, RecipeMinifiedSerializer
 from .subscription import UserWithRecipes
 from .tags import TagSerializer

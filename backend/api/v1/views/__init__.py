@@ -1,3 +1,4 @@
+from .favorite import FavoriteRecipesViewSet
 from .ingredient import IngredientViewSet
 from .recipe import RecipeViewSet
 from .subscription import SubscriptionViewSet
