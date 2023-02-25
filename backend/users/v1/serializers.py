@@ -18,7 +18,14 @@ class CustomUserSerializer(UserSerializer):
             'is_subscribed',
         )
     model = User
-    read_only_fields = ['id', 'is_subscribed']
+    read_only_fields = (
+        'email',
+        'id',
+        'username',
+        'first_name',
+        'last_name',
+        'is_subscribed',
+    )
 
     def validate_is_subscribed(self, value):
         if value == self.context['request'].user:

@@ -18,14 +18,14 @@ router.register(
     basename='recipes'
 )
 router.register(
-    'recipes',
-    views.RecipeViewSet,
-    basename='recipes'
-)
-router.register(
     'tags',
     views.TagViewSet,
     basename='tags'
+)
+router.register(
+    'users',
+    views.SubscriptionViewSet,
+    basename='subscriptions'
 )
 
 urlpatterns = [
