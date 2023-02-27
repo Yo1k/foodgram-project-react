@@ -23,6 +23,7 @@ class Favorite(models.Model):
         verbose_name=_('user'),
         on_delete=models.CASCADE
     )
+
     def __str__(self):
         return (
             f'user={self.user}, '
@@ -41,6 +42,12 @@ class Ingredient(models.Model):
     )
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['measurement_unit', 'name'],
+                name='unique_measurement_unit_name'
+            ),
+        ]
         ordering = ['name']
 
     def __str__(self):
@@ -109,6 +116,25 @@ class IngredientAmount(models.Model):
         )
 
 
+class ShoppingCart(models.Model):
+    recipe = models.ForeignKey(
+        'Recipe',
+        verbose_name=_('recipe'),
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User,
+        verbose_name=_('user'),
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return (
+            f'user={self.user}, '
+            f'favorite recipe={self.recipe}'
+        )
+
+
 class Tag(models.Model):
     color = models.CharField(
         _('HEX color'),
@@ -138,6 +164,4 @@ class Tag(models.Model):
         return f'name={self.name}'
 
 
-# class ShoppingCart(models.Model):
-#     pass
 

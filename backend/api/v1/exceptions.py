@@ -5,5 +5,9 @@ class FavoriteActionError(ValidationError):
     pass
 
 
+class ShopCartActionError(ValidationError):
+    pass
+
+
 class SubscribeActionError(ValidationError):
     pass

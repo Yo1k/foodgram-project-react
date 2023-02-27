@@ -35,6 +35,7 @@ class FavoriteRecipesViewSet(viewsets.GenericViewSet):
             else:
                 raise FavoriteActionError(REPITE_FAVORITE_ACTION_MESSAGE)
             serializer = self.get_serializer(instance)
+
             return Response(serializer.data)
 
         elif request.method == 'DELETE':
@@ -42,7 +43,7 @@ class FavoriteRecipesViewSet(viewsets.GenericViewSet):
                 instance.favorite_set.get(
                     recipe=instance,
                     user=self.request.user
-                )
+                ).delete()
             else:
                 raise FavoriteActionError(REPITE_FAVORITE_ACTION_MESSAGE)
             

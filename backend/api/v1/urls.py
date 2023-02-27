@@ -12,10 +12,18 @@ router.register(
     views.IngredientViewSet,
     basename='ingredients'
 )
+# Order is important for the same `prefix` or it is bug:
+# 'shopping_cart' with GET method are not found in the case
+# if it is placed after 'recipes' (btw POST and DELETE works properly)
 router.register(
     'recipes',
     views.FavoriteRecipesViewSet,
     basename='favorites'
+)
+router.register(
+    'recipes',
+    views.ShoppingCartViewSet,
+    basename='shopping_cart'
 )
 router.register(
     'recipes',
