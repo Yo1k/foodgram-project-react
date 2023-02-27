@@ -1,6 +1,7 @@
-from recipes.models import Recipe
+from recipes.models import Recipe, Favorite, ShoppingCart
 from rest_framework import status, viewsets
 from rest_framework.response import Response
+from django.db.models import Exists, OuterRef
 
 from ..serializers import RecipeCreateUpdateSerializer, RecipeListSerializer
 
@@ -12,7 +13,24 @@ class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
-    queryset = Recipe.objects.all().prefetch_related('author__subscribing')
+
+    def get_queryset(self):
+        favorite_expr = Favorite.objects.filter(
+            recipe=OuterRef('pk'),
+            user=self.request.user
+        )
+        shopping_cart_expr = ShoppingCart.objects.filter(
+            recipe=OuterRef('pk'),
+            user=self.request.user
+        )
+
+        queryset = (
+            Recipe.objects.all()
+            .prefetch_related('author__subscribing')
+            .annotate(is_favorited=Exists(favorite_expr))
+            .annotate(is_in_shopping_cart=Exists(shopping_cart_expr))
+        )
+        return queryset
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
@@ -48,7 +66,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
-        # self.perform_update(serializer) SKTODO old
         # Uses this to preserve the original structure
         # of the `ModelViewSet` class and get `obj` that is saved to DB. 
         obj = self.perform_update(serializer)

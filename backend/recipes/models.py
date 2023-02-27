@@ -1,3 +1,4 @@
+import os
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -67,7 +68,9 @@ class Recipe(models.Model):
         _('cooking time'),
         validators=[MinValueValidator(1),]
     )
-    # image = ... # SKTODO
+    image = models.ImageField(
+        upload_to=os.path.join('recipes', '')
+    )
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientAmount',

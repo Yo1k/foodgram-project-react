@@ -1,7 +1,30 @@
+import base64
+
+from django.core.files.base import ContentFile
 from recipes.models import Ingredient, IngredientAmount, Recipe, Tag
 from rest_framework import serializers
 from users.v1.serializers import CustomUserSerializer
+
 from .tags import TagSerializer
+
+
+class Base64ImageField(serializers.ImageField):
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            try:
+                mediatype, imgstr = data.split(';base64,')
+            except ValueError:
+                raise serializers.ValidationError(
+                    'The submitted data is not a base64 string'
+                )
+            extension = mediatype.split('/')[-1]
+
+            data = ContentFile(
+                base64.b64decode(imgstr),
+                name='recipe.' + extension
+            )
+
+        return super().to_internal_value(data)
 
 
 class IngredientInRecipeCreateSerializer(
@@ -45,6 +68,10 @@ class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
+    image = Base64ImageField(
+        allow_null=False,
+        required=True
+    )
     ingredients = IngredientInRecipeCreateSerializer(
         source='ingredientamount_set',
         many=True
@@ -59,7 +86,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'id',
             'ingredients',
             'tags',
-            # 'image', SKTODO
+            'image',
             'name',
             'text',
             'cooking_time',
@@ -135,8 +162,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         self.__check_related_ingredients(ingredients_data)
         self.__check_related_tags(tags_data)
 
-        #SKTODO add image
-        # instance.image = validated_data.get('image', instance.image)
+        instance.image = validated_data.get('image', instance.image)
         instance.name = validated_data.pop('name', instance.name)
         instance.text = validated_data.pop('text', instance.text)
         instance.cooking_time = validated_data.pop(
@@ -154,11 +180,17 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
 class RecipeListSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
+    image = Base64ImageField(
+        allow_null=False,
+        required=True
+    )
     ingredients = IngredientInRecipeSerializer(
         source='ingredientamount_set',
         many=True,
         read_only=True
     )
+    is_favorited = serializers.BooleanField(read_only=True)
+    is_in_shopping_cart = serializers.BooleanField(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
 
     class Meta:
@@ -167,10 +199,10 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'tags',
             'author',
             'ingredients',
-            # 'is_favorited', SKTODO
-            # 'is_in_shopping_cart', SKTODO
+            'is_favorited',
+            'is_in_shopping_cart',
             'name',
-            # 'image', SKTODO
+            'image',
             'text',
             'cooking_time',
         )
@@ -180,28 +212,31 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'tags',
             'author',
             'ingredients',
-            # 'is_favorited', SKTODO
-            # 'is_in_shopping_cart', SKTODO
+            'is_favorited',
+            'is_in_shopping_cart',
             'name',
-            # 'image', SKTODO
+            'image',
             'text',
             'cooking_time',
         )
 
 
 class RecipeMinifiedSerializer(serializers.ModelSerializer):
-    
+    image = Base64ImageField(
+        allow_null=False,
+        required=True
+    )
     class Meta:
         fields = (
             'id',
             'name',
-            # 'image', # SKTODO not impl'image'
+            'image',
             'cooking_time',
         )
         model = Recipe
         read_only_fields = (
             'id',
             'name',
-            # 'image', # SKTODO not impl
+            'image',
             'cooking_time',
         )
