@@ -5,6 +5,7 @@ from recipes.models import IngredientAmount, Recipe
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from ..exceptions import ShopCartActionError
 from ..serializers import RecipeMinifiedSerializer
@@ -16,6 +17,7 @@ REPITE_SHOPPING_CART_ACTION_MESSAGE = _(
 
 
 class ShoppingCartViewSet(viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated]
     serializer_class = RecipeMinifiedSerializer
 
     def get_queryset(self):

@@ -5,7 +5,7 @@ from recipes.models import Ingredient, IngredientAmount, Recipe, Tag
 from rest_framework import serializers
 from users.v1.serializers import CustomUserSerializer
 
-from .tags import TagSerializer
+from .tag import TagSerializer
 
 
 class Base64ImageField(serializers.ImageField):

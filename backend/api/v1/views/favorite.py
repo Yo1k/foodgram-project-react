@@ -1,7 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 from recipes.models import Recipe
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..exceptions import FavoriteActionError
@@ -13,6 +14,7 @@ REPITE_FAVORITE_ACTION_MESSAGE = _(
 )
 
 class FavoriteRecipesViewSet(viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated]
     serializer_class = RecipeMinifiedSerializer
 
     def get_queryset(self):

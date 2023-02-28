@@ -2,26 +2,22 @@ from recipes.models import Recipe, Favorite, ShoppingCart
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from django.db.models import Exists, OuterRef
-
+from ..permissions import IsAuthorOrAdminOrReadOnly
 from ..serializers import RecipeCreateUpdateSerializer, RecipeListSerializer
-
-
-class RecipeViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = RecipeListSerializer
-    queryset = Recipe.objects.all().prefetch_related('author__subscribing')
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete']
+    permission_classes = [IsAuthorOrAdminOrReadOnly]
 
     def get_queryset(self):
         favorite_expr = Favorite.objects.filter(
             recipe=OuterRef('pk'),
-            user=self.request.user
+            user__id=self.request.user.id
         )
         shopping_cart_expr = ShoppingCart.objects.filter(
             recipe=OuterRef('pk'),
-            user=self.request.user
+            user__id=self.request.user.id
         )
 
         queryset = (
