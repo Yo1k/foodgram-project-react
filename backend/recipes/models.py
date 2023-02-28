@@ -80,6 +80,10 @@ class Recipe(models.Model):
         _('name'),
         max_length=200,
     )
+    pub_date = models.DateTimeField(
+        _('publication date'),
+        auto_now_add=True,
+    )
     tags = models.ManyToManyField(
         'Tag',
         verbose_name=_('tags')
@@ -89,7 +93,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
+        ordering = ['-pub_date']
     
     def __str__(self):
         return f'name={self.name[:LENGTH_STR]}'
