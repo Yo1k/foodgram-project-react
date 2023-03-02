@@ -6,6 +6,7 @@ from ..serializers import IngredientSerializer
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [filters.SearchFilter]
+    pagination_class = None
     permission_classes = [AllowAny]
     search_fields = ['^name',]
     serializer_class = IngredientSerializer

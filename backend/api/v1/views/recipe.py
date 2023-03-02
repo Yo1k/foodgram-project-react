@@ -1,13 +1,20 @@
-from recipes.models import Recipe, Favorite, ShoppingCart
+from django.db.models import Exists, OuterRef
+from django_filters import rest_framework as df_filters
+from recipes.models import Favorite, Recipe, ShoppingCart
 from rest_framework import status, viewsets
 from rest_framework.response import Response
-from django.db.models import Exists, OuterRef
+
+from ..filters import RecipeFilter
+from ..pagination import RecipeResultPagination
 from ..permissions import IsAuthorOrAdminOrReadOnly
 from ..serializers import RecipeCreateUpdateSerializer, RecipeListSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    filter_backends = (df_filters.DjangoFilterBackend,)
+    filterset_class  = RecipeFilter
     http_method_names = ['get', 'post', 'patch', 'delete']
+    pagination_class = RecipeResultPagination
     permission_classes = [IsAuthorOrAdminOrReadOnly]
 
     def get_queryset(self):

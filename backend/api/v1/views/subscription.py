@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from ..exceptions import SubscribeActionError
+from ..pagination import SubscriptionResultPagination
 from ..serializers import UserWithRecipes
 
 # Constants with errors messages:
@@ -22,6 +23,7 @@ User = get_user_model()
 
 
 class SubscriptionViewSet(viewsets.GenericViewSet):
+    pagination_class = SubscriptionResultPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = UserWithRecipes
 
