@@ -1,8 +1,9 @@
 import os
+
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import MinValueValidator
 
 from .validators import color_hex_validator
 
@@ -58,6 +59,30 @@ class Ingredient(models.Model):
         )
 
 
+class IngredientAmount(models.Model):
+    amount = models.PositiveSmallIntegerField(
+        _('amount'),
+        validators=[MinValueValidator(1),]
+    )
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        verbose_name=_('ingredient')
+    )
+    recipe = models.ForeignKey(
+        'Recipe',
+        on_delete=models.CASCADE,
+        verbose_name=_('recipe')
+    )
+
+    def __str__(self) -> str:
+        return (
+            f'recipe_id={self.recipe}, '
+            f'ingredient_id={self.ingredient}, '
+            f'amount={self.amount}'
+        )
+
+
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
@@ -97,30 +122,6 @@ class Recipe(models.Model):
     
     def __str__(self):
         return f'name={self.name[:LENGTH_STR]}'
-
-
-class IngredientAmount(models.Model):
-    amount = models.PositiveSmallIntegerField(
-        _('amount'),
-        validators=[MinValueValidator(1),]
-    )
-    ingredient = models.ForeignKey(
-        Ingredient,
-        on_delete=models.CASCADE,
-        verbose_name=_('ingredient')
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name=_('recipe')
-    )
-
-    def __str__(self) -> str:
-        return (
-            f'recipe_id={self.recipe}, '
-            f'ingredient_id={self.ingredient}, '
-            f'amount={self.amount}'
-        )
 
 
 class ShoppingCart(models.Model):
