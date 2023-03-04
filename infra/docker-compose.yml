@@ -1,9 +1,21 @@
 version: '3.3'
 services:
-  web:
+  frontend:
     build:
-      context: ../backend
+      context: ../frontend
       dockerfile: Dockerfile
+    volumes:
+      - ../frontend/:/app/result_build/
+
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - foodgram_db_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  web:
+    image: yo1k/api_foodgram:latest
     restart: always
     command: >
       bash -c "
@@ -12,15 +24,13 @@ services:
         gunicorn api_foodgram.wsgi:application --bind 0:8000
       "
     volumes:
+      - ../data:/data/
       - foodgram_media:/app/media/
       - foodgram_static:/app/static/
-
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ../frontend/:/app/result_build/
+    env_file:
+      - ./.env
+    depends_on:
+      - db
 
   nginx:
     image: nginx:1.19.3
@@ -33,8 +43,10 @@ services:
       - foodgram_media:/var/html/media/
       - foodgram_static:/var/html/static/
     depends_on:
+      - frontend
       - web
 
 volumes:
+  foodgram_db_data:
   foodgram_media:
   foodgram_static:

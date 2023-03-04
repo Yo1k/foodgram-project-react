@@ -1,12 +1,16 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+DOTENV_PATH = BASE_DIR.parent / 'infra' / '.env'
 
+load_dotenv(DOTENV_PATH)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-avk%hf6_t=hhlafr5z=aaep=fpg1od@99s_86#&56mqj*8a&t1'
+SECRET_KEY = os.getenv('SECRET_KEY', 'set_secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -69,8 +73,12 @@ WSGI_APPLICATION = 'api_foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', 'postgres'),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
+        'HOST': os.getenv('DB_HOST', 'db'),
+        'PORT': os.getenv('DB_PORT', '5432')
     }
 }
 
