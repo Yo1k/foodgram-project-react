@@ -26,7 +26,7 @@ urlpatterns = [
         CustomUserViewSet.as_view({'get': 'set_password'})
     ),
     path(
-        '',
+        'auth/',
         include('djoser.urls.authtoken')
     ),
 ]
