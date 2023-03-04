@@ -37,3 +37,18 @@ class UserWithRecipes(CustomUserSerializer):
             'recipes',
             'recipes_count',
         )
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        if request and hasattr(request, 'query_params'):
+            request_query_params = request.query_params
+
+        limit = int(request_query_params.get('recipes_limit'))
+
+        self.fields.pop('recipes', None)
+        representation = super().to_representation(instance)
+        representation['recipes'] = RecipeMinifiedSerializer(
+            instance.recipe_set.all()[:limit],
+            many=True
+        ).data
+        return representation
