@@ -1,11 +1,18 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
-from recipes.models import IngredientAmount, Recipe
-from rest_framework import status, viewsets
+from rest_framework import (
+    status,
+    viewsets
+)
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from recipes.models import (
+    IngredientAmount,
+    Recipe
+)
 
 from ..exceptions import ShopCartActionError
 from ..serializers import RecipeMinifiedSerializer
@@ -37,7 +44,7 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
             .annotate(total_amount=Sum('amount'))
             .order_by('ingredient__name', 'ingredient__measurement_unit')
         )
-        
+
         response = HttpResponse(
             'Shopping list:\n',
             content_type='text/plain; charset=UTF-8',
@@ -60,7 +67,7 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['post', 'delete'])
     def shopping_cart(self, request, pk=None):
         instance = self.get_object()
-        
+
         is_in_shopping_cart = instance.shoppingcart_set.filter(
             user=request.user
         ).exists()
@@ -77,7 +84,7 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
 
             return Response(serializer.data)
 
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             if is_in_shopping_cart:
                 instance.shoppingcart_set.get(
                     recipe=instance,
@@ -85,7 +92,7 @@ class ShoppingCartViewSet(viewsets.GenericViewSet):
                 ).delete()
             else:
                 raise ShopCartActionError(REPITE_SHOPPING_CART_ACTION_MESSAGE)
-            
+
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            assert False
+
+        assert False

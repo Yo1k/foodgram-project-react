@@ -48,7 +48,6 @@ class RecipeAdmin(admin.ModelAdmin):
             obj.author.username
         ))
 
-    
     @admin.display(
         description=_('Total count "In Favorite" for this recipe'),
     )

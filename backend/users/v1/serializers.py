@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import (
+    UserCreateSerializer,
+    UserSerializer
+)
 from rest_framework import serializers
 
 User = get_user_model()
@@ -43,8 +46,7 @@ class CustomUserSerializer(UserSerializer):
             # that falls with the error in the case of an
             # anonymous client.
             return obj.subscribing.filter(user__id=request.user.id).exists()
-        else:
-            return False
+        return False
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):

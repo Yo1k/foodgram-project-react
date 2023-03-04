@@ -62,7 +62,7 @@ class Ingredient(models.Model):
 class IngredientAmount(models.Model):
     amount = models.PositiveSmallIntegerField(
         _('amount'),
-        validators=[MinValueValidator(1),]
+        validators=[MinValueValidator(1), ]
     )
     ingredient = models.ForeignKey(
         Ingredient,
@@ -91,7 +91,7 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         _('cooking time'),
-        validators=[MinValueValidator(1),]
+        validators=[MinValueValidator(1), ]
     )
     image = models.ImageField(
         upload_to=os.path.join('recipes', '')
@@ -119,7 +119,7 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
-    
+
     def __str__(self):
         return f'name={self.name[:LENGTH_STR]}'
 
@@ -150,7 +150,7 @@ class Tag(models.Model):
         max_length=7,
         null=True,
         unique=True,
-        validators=[color_hex_validator,]
+        validators=[color_hex_validator, ]
     )
     name = models.CharField(
         _('name'),
@@ -170,6 +170,3 @@ class Tag(models.Model):
 
     def __str__(self):
         return f'name={self.name}'
-
-
-

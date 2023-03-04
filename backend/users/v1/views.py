@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from djoser.views import UserViewSet
+
 from .pagination import CustomUserResultPagination
 
 User = get_user_model()

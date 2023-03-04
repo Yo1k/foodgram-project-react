@@ -1,6 +1,14 @@
-from typing import Any, Dict
+from typing import (
+    Any,
+    Dict
+)
+
 from django_filters import rest_framework as df_filters
-from recipes.models import Recipe, Tag
+
+from recipes.models import (
+    Recipe,
+    Tag
+)
 
 BINARY_CHOISES = {
     0: False,
@@ -30,7 +38,7 @@ class RecipeFilter(df_filters.FilterSet):
             'tags',
         ]
         model = Recipe
-    
+
     def get_is_favorited(self, queryset, name, value):
         return self.__get_on_condition(queryset, name, value, BINARY_CHOISES)
 
@@ -38,12 +46,12 @@ class RecipeFilter(df_filters.FilterSet):
         return self.__get_on_condition(queryset, name, value, BINARY_CHOISES)
 
     def __get_on_condition(
-            self,
-            queryset,
-            name,
-            value,
-            choises: Dict[int, Any]
-        ):
+        self,
+        queryset,
+        name,
+        value,
+        choises: Dict[int, Any]
+    ):
         '''
         Returns `QuerySet` that matches boolean condition.
 

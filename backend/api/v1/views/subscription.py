@@ -1,7 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
-from rest_framework import status, viewsets
+from rest_framework import (
+    status,
+    viewsets
+)
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -33,7 +36,7 @@ class SubscriptionViewSet(viewsets.GenericViewSet):
             prefetch_related('recipe_set', 'subscribing')
             .annotate(recipes_count=Count('recipe'))
         )
-    
+
     @action(detail=False, methods=['get'])
     def subscriptions(self, request):
         queryset = self.filter_queryset(self.get_queryset())
@@ -53,8 +56,9 @@ class SubscriptionViewSet(viewsets.GenericViewSet):
             raise SubscribeActionError(SELF_SUBSCRIBE_MESSAGE)
 
         is_subscriber = instance.subscribing.filter(
-                user=request.user).exists()
-    
+            user=request.user
+        ).exists()
+
         if request.method == 'POST':
             if not is_subscriber:
                 instance.subscribing.create(
@@ -67,7 +71,7 @@ class SubscriptionViewSet(viewsets.GenericViewSet):
 
             return Response(serializer.data)
 
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             if is_subscriber:
                 instance.subscribing.get(
                     subscribing=instance,
@@ -75,7 +79,7 @@ class SubscriptionViewSet(viewsets.GenericViewSet):
                 ).delete()
             else:
                 raise SubscribeActionError(REPITE_SUBSCRIBE_MESSAGE)
-            
+
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            assert False
+
+        assert False

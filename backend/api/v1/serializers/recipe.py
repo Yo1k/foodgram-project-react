@@ -1,8 +1,14 @@
 import base64
 
 from django.core.files.base import ContentFile
-from recipes.models import Ingredient, IngredientAmount, Recipe, Tag
 from rest_framework import serializers
+
+from recipes.models import (
+    Ingredient,
+    IngredientAmount,
+    Recipe,
+    Tag
+)
 from users.v1.serializers import CustomUserSerializer
 
 from .tag import TagSerializer
@@ -29,7 +35,7 @@ class Base64ImageField(serializers.ImageField):
 
 class IngredientInRecipeCreateSerializer(
     serializers.HyperlinkedModelSerializer
-    ):
+):
     id = serializers.IntegerField(min_value=1)
 
     class Meta:
@@ -39,8 +45,8 @@ class IngredientInRecipeCreateSerializer(
         )
         model = IngredientAmount
         read_only_fields = (
-        'id',
-    )
+            'id',
+        )
 
 
 class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
@@ -51,6 +57,7 @@ class IngredientInRecipeSerializer(serializers.HyperlinkedModelSerializer):
     name = serializers.ReadOnlyField(
         source='ingredient.name'
     )
+
     class Meta:
         fields = (
             'id',
@@ -79,7 +86,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Tag.objects.all()
-        )
+    )
 
     class Meta:
         fields = (
@@ -95,20 +102,22 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         read_only_fields = (
             'id',
         )
-    
+
     def __check_related_ingredients(self, ingredients_data):
         if not ingredients_data:
-            return None
+            return
+
         ingredients_ids = Ingredient.objects.all().values_list('id', flat=True)
         for ingredient in ingredients_data:
             if ingredient['id'] not in ingredients_ids:
                 raise serializers.ValidationError(
                     f'There is no ingrediet with id={ingredient["id"]}'
                 )
-    
+
     def __check_related_tags(self, tags_data):
         if not tags_data:
-            return None
+            return
+
         tags_ids = Tag.objects.all().values_list('id', flat=True)
         for tag in tags_data:
             if tag.id not in tags_ids:
@@ -118,7 +127,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def __save_related_ingredients(self, ingredients_data, obj, update=False):
         if not ingredients_data:
-            return None
+            return
 
         if not update:
             for ingredient_data in ingredients_data:
@@ -154,7 +163,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         self.__save_related_tags(tags_data, recipe)
         return recipe
 
-    
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredientamount_set', None)
         tags_data = validated_data.pop('tags', None)
@@ -177,6 +185,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         self.__save_related_tags(tags_data, instance)
 
         return instance
+
 
 class RecipeListSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
@@ -226,6 +235,7 @@ class RecipeMinifiedSerializer(serializers.ModelSerializer):
         allow_null=False,
         required=True
     )
+
     class Meta:
         fields = (
             'id',

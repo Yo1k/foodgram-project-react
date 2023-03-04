@@ -5,6 +5,7 @@ from pathlib import Path
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils.translation import gettext_lazy as _
+
 from recipes import models
 
 CSV_DIR: Path = settings.BASE_DIR.parent / 'data'
@@ -24,7 +25,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for model, file in TABLES.items():
             with open(
-                file = CSV_DIR / file['path'],
+                file=CSV_DIR / file['path'],
                 encoding='utf-8'
             ) as csvfile:
                 reader = csv.DictReader(

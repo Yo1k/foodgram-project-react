@@ -1,4 +1,7 @@
-from django.urls import include, path
+from django.urls import (
+    include,
+    path
+)
 
 from .views import CustomUserViewSet
 
@@ -7,11 +10,11 @@ app_name = 'v1'
 
 urlpatterns = [
     path(
-    'users/',
-    CustomUserViewSet.as_view({
-        'get': 'list',
-        'post': 'create',
-    })
+        'users/',
+        CustomUserViewSet.as_view({
+            'get': 'list',
+            'post': 'create',
+        })
     ),
     path(
         'users/me/',
