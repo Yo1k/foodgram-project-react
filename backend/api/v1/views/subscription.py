@@ -40,6 +40,7 @@ class SubscriptionViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['get'])
     def subscriptions(self, request):
         queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.filter(subscribing__user=self.request.user)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
