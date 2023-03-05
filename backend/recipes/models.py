@@ -7,8 +7,10 @@ from django.utils.translation import gettext_lazy as _
 
 from .validators import color_hex_validator
 
-# The length of text used in `__str__`
+# The length of text used in `__str__`.
 LENGTH_STR = 15
+# The max length of string fields.
+MAX_LENGTH = 200
 
 
 User = get_user_model()
@@ -36,11 +38,11 @@ class Favorite(models.Model):
 class Ingredient(models.Model):
     measurement_unit = models.CharField(
         _('measurement unit'),
-        max_length=200,
+        max_length=MAX_LENGTH,
     )
     name = models.CharField(
         _('name'),
-        max_length=200,
+        max_length=MAX_LENGTH,
     )
 
     class Meta:
@@ -103,7 +105,7 @@ class Recipe(models.Model):
     )
     name = models.CharField(
         _('name'),
-        max_length=200,
+        max_length=MAX_LENGTH,
     )
     pub_date = models.DateTimeField(
         _('publication date'),
@@ -154,13 +156,13 @@ class Tag(models.Model):
     )
     name = models.CharField(
         _('name'),
-        max_length=200,
+        max_length=MAX_LENGTH,
         unique=True,
     )
     slug = models.SlugField(
         _('unique slug'),
         blank=True,
-        max_length=200,
+        max_length=MAX_LENGTH,
         null=True,
         unique=True,
     )
